@@ -35,3 +35,44 @@ class SelfAttention(nn.Module):
 
         self.unifyheads = nn.Linear(heads * k, k)
 
+
+    def forward(self, x):
+        """ Compute self attention 
+            from an input vector. 
+
+            @param x: matrix of size 
+                    (b:batch, t: vector, k: t_dimensions)
+
+            
+        """
+        b, t, k = x.size()
+        h = self.heads
+        assert k == self.k, f'Input vector dim [{k}] should match layer dimension [{self.k}]'
+
+
+        keys = self.tokeys(x).view(b, t, h, k)
+        queries = self.toqueries(x).view(b, t, h, k)
+        values = self.tovalues(x).view(b, t, h, k)
+        # reshape output of linear transform from 
+            # (b,t,h*k) tp b,t,h,k 
+
+
+        # bring back torch.bmm() to compute dot products
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
