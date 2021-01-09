@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F 
 
+import random, math
 
 class SelfAttention(nn.Module):
     def __init__(self, k, head=8):
@@ -19,6 +20,7 @@ class SelfAttention(nn.Module):
                 input vector.
         """
         super().__init__()
+        
         self.k, self.heads = k, heads
 
     
@@ -76,15 +78,23 @@ class SelfAttention(nn.Module):
         dot = torch.bmm(queries, keys.transpose(1, 2))
 
 
-
         # normalize weights with softmax
         dot = F.softmax(dot, dim=2)
         
+        assert dot.size() == (b*h, t, t), f"weight matrix has size of {dot.size()}, expected {b*h, t, t}."
 
-        # apply dot product to the values
-
-        torch.bmm(dot, values).view(b,h, t, k)
+        # apply dot product to the values=
+        out = torch.bmm(dot, values).view(b,h, t, k)
         
+        # get the head and embedding dimension next to each other, 
+                        # then transfrom for shape (b, t, h * k)
+
+        out = out.transpose(1, 2).contiguous().view(b, t, h * k)
+        
+
+        # linear transform back down to h*k, k dimensions
+
+        return self.unifyheads(out)
 
 
  
