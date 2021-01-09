@@ -40,14 +40,14 @@ class SelfAttention(nn.Module):
         """ Compute self attention 
             from an input vector. 
 
-            @param x: matrix of size 
-                    (b:batch, t: vector, k: t_dimensions)
+            @param x: matrix of size (b:batch, t: vector, k: t_dimensions)
 
             
         """
         b, t, k = x.size()
         h = self.heads
-        assert k == self.k, f'Input vector dim [{k}] should match layer dimension [{self.k}]'
+        assert k == self.k, f'Input vector dim [{k}] should match layer \
+                                                    dimension [{self.k}]'
 
 
         keys = self.tokeys(x).view(b, t, h, k)
@@ -57,21 +57,37 @@ class SelfAttention(nn.Module):
             # (b,t,h*k) tp b,t,h,k 
 
 
-        # bring back torch.bmm() to compute dot products
+        # dot product is next, to do that we need to
+        # get the batch dimension next to the head so
+        # that our operation works on (batch, head, vector, 
+        # dimension). 
+    
+        keys = keys.transpose(1,2).contiguous().view(b* h, t, k)
+        queries = queries.transpose(1,2).contiguous().view(b* h, t, k)
+        values = values.transpose(1,2).contiguous().view(b* h, t, k)
+
+
+        # scale back the keys and queries to save memory on the 
+                                        # dot product computation. 
+        keys = keys / (k ** (1/4))
+        queries = queries / (k ** (1/4))
+        
+        # dot product operation:
+        dot = torch.bmm(queries, keys.transpose(1, 2))
 
 
 
+        # normalize weights with softmax
+        dot = F.softmax(dot, dim=2)
+        
+
+        # apply dot product to the values
+
+        torch.bmm(dot, values).view(b,h, t, k)
+        
 
 
-
-
-
-
-
-
-
-
-
+ 
 
 
 
