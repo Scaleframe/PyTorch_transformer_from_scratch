@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import random, math
 
 class SelfAttention(nn.Module):
-    def __init__(self, k, head=8):
+    def __init__(self, k, heads=8):
         """ Initializes parameters for input 
                 sequence to transformer model
 
@@ -97,7 +97,11 @@ class SelfAttention(nn.Module):
         return self.unifyheads(out)
 
 
- 
+class TransformerBlock(nn.Module):
+    pass
+
+
+
 
 
 
