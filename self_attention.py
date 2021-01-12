@@ -102,9 +102,9 @@ class TransformerBlock(nn.Module):
     def __init__(self, k, heads):
         super().__init__()
 
+        # add self attention layer 
 
+        self.attention = SelfAttention(k, heads=heads)
 
-
-
-
-
+        
+        
