@@ -106,5 +106,10 @@ class TransformerBlock(nn.Module):
 
         self.attention = SelfAttention(k, heads=heads)
 
-        
+        # add layer normalization
+
+        self.norm1 = nn.LayerNorm(k)
+        self.norm2 = nn.LayerNorm(k)
+
+
         
