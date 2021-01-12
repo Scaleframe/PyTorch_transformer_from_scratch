@@ -98,7 +98,9 @@ class SelfAttention(nn.Module):
 
 
 class TransformerBlock(nn.Module):
-    pass
+    
+    def __init__(self, k, heads):
+        super().__init__()
 
 
 
