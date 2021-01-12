@@ -110,6 +110,13 @@ class TransformerBlock(nn.Module):
 
         self.norm1 = nn.LayerNorm(k)
         self.norm2 = nn.LayerNorm(k)
+        
+        # add feedforward layer
+
+        self.ff = nn.Sequential(
+            nn.Linear(k, 4*k),
+            nn.ReLu(),
+            nn.Linear(4 * k, k))
 
 
         
