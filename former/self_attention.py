@@ -118,5 +118,10 @@ class TransformerBlock(nn.Module):
             nn.ReLu(),
             nn.Linear(4 * k, k))
 
+    def forward(self, x):
+        attended = self.attention(x)
+        x = self.norm1(attended + x)
 
         
+        feedforward = self.ff(x)
+        return self.norm2(feedforward + x)
